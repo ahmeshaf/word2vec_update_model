@@ -10,7 +10,7 @@ return updated model
 import gensim
 import logging
 
-from numpy import REAL, array, zeros, ones
+from numpy import array, zeros, ones, float32 as REAL
 
 
 def update(model, data, num_sentences, mincount=3):
@@ -77,4 +77,11 @@ def update(model, data, num_sentences, mincount=3):
 
 def update_model(model, text_file, sentence_length=56):
     sentences = gensim.models.word2vec.LineSentence(text_file, max_sentence_length=sentence_length)
-    return update(model, sentences, len(sentences))
+    return update(model, sentences, get_num_sentences(text_file, sentence_length))
+
+
+def get_num_sentences(text_file, sentence_length=56):
+    with open(text_file, 'r') as content_file:
+        content = content_file.read()
+    all_words = [word for word in content.split()]
+    return len(all_words)/sentence_length
